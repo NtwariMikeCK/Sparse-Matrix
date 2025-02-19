@@ -20,7 +20,7 @@ This project is a Python-based application to handle sparse matrices efficiently
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/sparse-matrix-operations.git
+   git clone https://github.com/NtwariMikeCK/Sparse-Matrix
    cd sparse-matrix-operations
    ```
 2. Run the program:
@@ -113,6 +113,4 @@ We welcome contributions! Follow these steps:
    git push origin feature-name
    ```
 5. Create a pull request.
-
-## License
-This project is licensed under the MIT License.
+   
