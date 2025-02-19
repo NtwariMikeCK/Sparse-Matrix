@@ -1,48 +1,64 @@
 class SparseMatrix:
   def __init__(self, file_path=None, rows=0, cols=0):
-    self.file_path = file_path
+    # Innitialize all the variables to be used 
+    self.file_path = file_path #The file to read
     self.num_rows = rows
     self.num_cols = cols
-    self.elements = {} # # Dictionary to store non-zero values as {(row, col): value}
+    self.elements = {} # Dictionary to store non-zero values as {(row, col): value}
     if file_path:
+      # If the file exists, load all the data using load_data function
       self.load_data(file_path)
 
 
   def load_data(self, file_path):
+    # function to load or read the data in files
     try:
       with open(file_path, 'r') as f:
         data = f.readlines()
 
-      # Process rows and columns
+      # Process rows and columns which are found on row1 and row2
       self.num_rows = int(data[0].split('=')[1].strip())
       self.num_cols = int(data[1].split('=')[1].strip())
 
-      # Lets process the remaining data points
+      # Lets process the remaining data points from row3 downwards
       for item in data[2:]:
         item = item.strip()
         if not item:
           continue
+        # check if data is in the correct format ex: (row, col, value)
         if not (item.startswith('(') and item.endswith(')')):
           raise ValueError('Input file has wrong format')
         
+        # if data in correct format, then separate into row, col, value 
+        # then make a dict (row, col) = value
         row, col, value = map(int, item[1:-1].split(','))
         self.elements[(row, col)] = value
 
     except Exception as e:
       raise ValueError(f"Error reading file: {e}")
     
+
   def get_element(self, row, col):
+    # get the value at (row and col), default = 0
     return self.elements.get((row, col), 0)
   
   def set_element(self, row, col, value):
+    # updates the value of an element in the sparse matrix 
+    # at the specified row and column (row, col
     if value != 0:
+      # check if the value is a non zero, then add or update
       self.elements[(row, col)] = value
     elif (row, col) in self.elements:
+      # if the (row, col) exists, and the value is zero, remove it
+      # since we are only keeping non zero values
       del self.elements[(row, col)]
 
   def add(self, other):
+    # creates an new instance of SparceMatrix called result to store the new matrix and sets 
+    # its row and col from getting the maximum rows and col from both files
     result = SparseMatrix(rows=max(self.num_rows, other.num_rows), cols=max(self.num_cols, other.num_cols))
     
+    # Check if key(row, col) from self is present in other.items. If found, conduct the operat
     for (row, col), value in self.elements.items():
       if (row, col) in other.elements:
         result.set_element(row, col, value + other.get_element(row, col))
@@ -58,8 +74,6 @@ class SparseMatrix:
     
     return result
 
-
-  
 
   def multiply(self, other):
     if self.num_cols != other.num_rows:
@@ -80,7 +94,7 @@ class SparseMatrix:
 
 if __name__ == "__main__":
     try:
-        print("Select operation: 1 for Addition, 2 for Subtraction, 3 for Multiplication")
+        print("Select operation: 1 for Addition, 2 for Subtraction, 3 for Multiplication, 4 for Getting the value at (row, key)")
         operation = int(input("Enter your choice: "))
 
         # filea = 'sample_inputs/matrixfile1.txt'
@@ -101,6 +115,16 @@ if __name__ == "__main__":
             result = matrix1.subtract(matrix2)
         elif operation == 3:
             result = matrix1.multiply(matrix2)
+        elif operation == 4:
+            row = int(input("Enter the row: "))
+            col = int(input("Enter the col: "))
+            value = int(input("Whci file do you want to use: "))
+            if value == 1:
+               result = matrix1.get_element(row, col)
+            elif value == 2:
+               result = matrix2.get_element(row, col)
+            else:
+               result = matrix1.get_element(row, col)
         else:
             raise ValueError("Invalid operation choice")
 
@@ -109,5 +133,3 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"Error: {e}")
-
-
