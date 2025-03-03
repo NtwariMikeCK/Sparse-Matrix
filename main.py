@@ -76,16 +76,12 @@ class SparseMatrix:
 
 
   def multiply(self, other):
-    if self.num_cols != other.num_rows:
-      raise ValueError("Invalid dimensions for matrix multiplication")
-
-    result = SparseMatrix(rows=self.num_rows, cols=other.num_cols)
-
-    for (row, col), value in self.elements.items():
-      for k in range(other.num_cols):
-        if (col, k) in other.elements:
-          result.set_element(row, k, result.get_element(row, k) + value * other.get_element(col, k))
+    result = SparseMatrix(rows=max(self.num_rows, other.num_rows), cols=max(self.num_cols, other.num_cols))
     
+    # Check if key(row, col) from self is present in other.items. If found, conduct the operat
+    for (row, col), value in self.elements.items():
+      if (row, col) in other.elements:
+        result.set_element(row, col, value * other.get_element(row, col))
     return result
 
   def __str__(self):
